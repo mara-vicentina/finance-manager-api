@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Services\AppService;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -12,23 +14,25 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $request->validate([
+        $rules = [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6|confirmed',
             'birth_date' => 'required|date',
-        ]);
+        ];
+    
+        if ($validation = AppService::validateRequest($request->all(), $rules)) {
+            return response()->json($validation, $validation['status_code']);
+        }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'birth_date' => $request->birth_date,
-        ]);
+        $data = $request->all();
+        $data['password'] = Hash::make($request->password);
+
+        User::create($data);
 
         return response()->json([
             'success' => true,
-            'message' => 'Usuário registrado com sucesso!'
+            'message' => 'Usuário registrado com sucesso!',
         ], 201);
     }
 
@@ -39,7 +43,7 @@ class AuthController extends Controller
         if (!$token = Auth::attempt($credentials)) {
             return response()->json([
                 'success' => false,
-                'error' => 'Credenciais inválidas'
+                'message' => 'Credenciais inválidas',
             ], 401);
         }
 
@@ -47,7 +51,7 @@ class AuthController extends Controller
             'success' => true,
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60
+            'expires_in' => Auth::factory()->getTTL() * 60,
         ]);
     }
 
@@ -56,7 +60,7 @@ class AuthController extends Controller
         Auth::logout();
         return response()->json([
             'success' => true,
-            'message' => 'Logout realizado com sucesso'
+            'message' => 'Logout realizado com sucesso',
         ]);
     }
 }
