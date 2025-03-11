@@ -10,6 +10,32 @@ use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
+    public function list(Request $request)
+    {
+        $rules = [
+            'start_date' => 'date',
+            'end_date' => 'date',
+        ];
+    
+        if ($validation = AppService::validateRequest($request->all(), $rules)) {
+            return response()->json($validation, $validation['status_code']);
+        }
+
+        $transactions = Transaction::when(!empty($request->start_date), function ($query) use ($request) {
+                return $query->where('transaction_date', '>=', $request->start_date . ' 00:00:00');
+            })
+            ->when(!empty($request->end_date), function ($query) use ($request) {
+                return $query->where('transaction_date', '<=', $request->end_date . ' 23:59:59');
+            })
+            ->orderBy('transaction_date', 'asc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $transactions,
+        ], 200);
+    }
+    
     public function create(Request $request)
     {
         $rules = [
