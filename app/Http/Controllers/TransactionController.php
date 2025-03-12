@@ -80,6 +80,7 @@ class TransactionController extends Controller
         }
 
         $transaction = Transaction::whereId($id)->first();
+        
         if (!$this->validateTransaction($transaction)) {
             return response()->json([
                 'success' => false,
@@ -98,6 +99,7 @@ class TransactionController extends Controller
     public function delete($id)
     {
         $transaction = Transaction::whereId($id)->first();
+
         if (!$this->validateTransaction($transaction)) {
             return response()->json([
                 'success' => false,
