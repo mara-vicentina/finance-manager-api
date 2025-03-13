@@ -13,20 +13,29 @@ class TransactionController extends Controller
     public function list(Request $request)
     {
         $rules = [
-            'start_date' => 'date',
-            'end_date' => 'date',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+            'type' => 'nullable|boolean',
+            'category' => 'nullable|integer',
         ];
     
         if ($validation = AppService::validateRequest($request->all(), $rules)) {
             return response()->json($validation, $validation['status_code']);
         }
 
-        $transactions = Transaction::when(!empty($request->start_date), function ($query) use ($request) {
-                return $query->where('transaction_date', '>=', $request->start_date . ' 00:00:00');
-            })
-            ->when(!empty($request->end_date), function ($query) use ($request) {
-                return $query->where('transaction_date', '<=', $request->end_date . ' 23:59:59');
-            })
+        $transactions = Transaction::query()
+            ->when(!empty($request->start_date), fn($query) => 
+                $query->where('transaction_date', '>=', $request->start_date . ' 00:00:00')
+            )
+            ->when(!empty($request->end_date), fn($query) => 
+                $query->where('transaction_date', '<=', $request->end_date . ' 23:59:59')
+            )
+            ->when(!empty($request->type), fn($query) => 
+                $query->where('type', $request->type)
+            )
+            ->when(!empty($request->category), fn($query) => 
+                $query->where('category', $request->category)
+            )
             ->orderBy('transaction_date', 'asc')
             ->get();
 

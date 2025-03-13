@@ -32,7 +32,7 @@ class UserController extends Controller
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|min:6|max:255|confirmed',
             'birth_date' => 'required|date',
         ];
     
@@ -49,6 +49,44 @@ class UserController extends Controller
             'success' => true,
             'message' => 'Usuário registrado com sucesso!',
         ], 201);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $rules = [
+            'name' => 'required|string|max:255',
+            'password' => 'nullable|min:6|max:255|confirmed',
+            'birth_date' => 'required|date',
+            'cpf' => 'required|digits:11',
+            'cep' => 'required|digits:8',
+            'address' => 'required|max:255',
+        ];
+    
+        if ($validation = AppService::validateRequest($request->all(), $rules)) {
+            return response()->json($validation, $validation['status_code']);
+        }
+
+        $user = User::whereId($id)->first();
+        
+        if (!$this->validateUser($user)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'O usuário não foi encontrado.',
+            ], 404);
+        }
+
+        $data = $request->all();
+
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        $user->update($data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuário atualizado com sucesso!',
+        ], 200);
     }
 
     public function delete($id)
