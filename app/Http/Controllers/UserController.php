@@ -60,6 +60,7 @@ class UserController extends Controller
             'cpf' => 'required|digits:11',
             'cep' => 'required|digits:8',
             'address' => 'required|max:255',
+            'phonenumber' => 'required|digits:11',
         ];
     
         if ($validation = AppService::validateRequest($request->all(), $rules)) {

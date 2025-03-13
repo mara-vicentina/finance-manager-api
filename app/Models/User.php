@@ -26,6 +26,7 @@ class User extends Authenticatable implements JWTSubject
         'cpf',
         'cep',
         'address',
+        'phonenumber',
     ];
 
     /**
@@ -59,5 +60,25 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function getCpfAttribute($value)
+    {
+        return $value ?? '';
+    }
+
+    public function getCepAttribute($value)
+    {
+        return $value ?? '';
+    }
+
+    public function getAddressAttribute($value)
+    {
+        return $value ?? '';
+    }
+
+    public function getPhonenumberAttribute($value)
+    {
+        return $value ?? '';
     }
 }

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('cpf')->nullable();
             $table->string('cep')->nullable();
             $table->string('address')->nullable();
+            $table->string('phonenumber')->nullable();
         });
     }
 
@@ -24,7 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['cpf', 'cep', 'address']);
+            $table->dropColumn(['cpf', 'cep', 'address', 'phonenumber']);
         });
     }
 };
