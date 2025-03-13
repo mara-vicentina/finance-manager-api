@@ -12,7 +12,9 @@ class UserController extends Controller
 {
     public function get($id)
     {
-        $user = User::whereId($id)->first(['id', 'name', 'cpf', 'cep', 'address', 'birth_date', 'email']);
+        $user = User::whereId($id)->first([
+            'id', 'name', 'cpf', 'cep', 'address', 'birth_date', 'email', 'phonenumber'
+        ]);
 
         if (!$this->validateUser($user)) {
             return response()->json([
