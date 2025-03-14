@@ -13,7 +13,7 @@ class UserController extends Controller
     public function get($id)
     {
         $user = User::whereId($id)->first([
-            'id', 'name', 'cpf', 'cep', 'address', 'birth_date', 'email', 'phonenumber'
+            'id', 'name', 'cpf', 'cep', 'address', 'birth_date', 'email', 'phone_number'
         ]);
 
         if (!$this->validateUser($user)) {
@@ -62,7 +62,7 @@ class UserController extends Controller
             'cpf' => 'required|digits:11',
             'cep' => 'required|digits:8',
             'address' => 'required|max:255',
-            'phonenumber' => 'required|digits:11',
+            'phone_number' => 'required|digits:11',
         ];
     
         if ($validation = AppService::validateRequest($request->all(), $rules)) {
