@@ -14,7 +14,7 @@ class DashboardController extends Controller
     {
         $sumCategories = Transaction::select(
                 'category',
-                DB::raw('SUM(CASE WHEN type = 1 THEN value ELSE -value END) as sum')
+                DB::raw('SUM(CASE WHEN type = 0 THEN value ELSE -value END) as sum')
             )
             ->where('user_id', Auth::id())
             ->whereBetween('transaction_date', [date('Y-m-01'), date('Y-m-d')])
