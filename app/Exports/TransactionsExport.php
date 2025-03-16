@@ -32,7 +32,11 @@ class TransactionsExport implements FromCollection, WithHeadings
         )
         ->where('user_id', Auth::id())
         ->whereBetween('transaction_date', [$this->startDate, $this->endDate])
-        ->get();
+        ->get()
+        ->map(function($transaction) {
+            $transaction->value = 'R$ ' . number_format($transaction->value, 2, ',', '.');
+            return $transaction;
+        });
     }
 
     public function headings(): array
