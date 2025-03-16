@@ -14,6 +14,7 @@ class DashboardController extends Controller
     {
         $sumCategories = Transaction::select('category', DB::raw('sum(value) as sum'))
             ->where('user_id', Auth::id())
+            ->whereBetween('transaction_date', [date('Y-m-01'), date('Y-m-d')])
             ->groupBy('category')
             ->orderBy('category', 'asc')
             ->get();
