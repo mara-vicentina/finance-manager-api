@@ -4,9 +4,10 @@ namespace App\Exports;
 
 use App\Models\Transaction;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Support\Facades\Auth;
 
-class TransactionsExport implements FromCollection
+class TransactionsExport implements FromCollection, WithHeadings
 {
     protected $startDate;
     protected $endDate;
