@@ -111,5 +111,7 @@ return [
         'category' => 'categoria',
         'payment_method' => 'método de pagamento',
         'payment_status' => 'status do pagamento',
+        'start_date' => 'período inicial',
+        'end_date' => 'período final',
     ],
 ];
