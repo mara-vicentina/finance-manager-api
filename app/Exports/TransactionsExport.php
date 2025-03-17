@@ -6,6 +6,7 @@ use App\Models\Transaction;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TransactionsExport implements FromCollection, WithHeadings
 {
@@ -32,9 +33,14 @@ class TransactionsExport implements FromCollection, WithHeadings
         )
         ->where('user_id', Auth::id())
         ->whereBetween('transaction_date', [$this->startDate, $this->endDate])
+        ->orderBy('transaction_date', 'asc')
+        ->orderBy('id', 'asc')
         ->get()
         ->map(function($transaction) {
-            $transaction->value = 'R$ ' . number_format($transaction->value, 2, ',', '.');
+            $transaction->type = Transaction::getTypeName($transaction->type);
+            $transaction->payment_method = Transaction::getPaymentMethodName($transaction->payment_method);
+            $transaction->payment_status = Transaction::getPaymentStatusName($transaction->payment_status);
+            $transaction->value = 'R$ ' . number_format($transaction->value, 2, ',', '');
             return $transaction;
         });
     }

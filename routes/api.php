@@ -24,5 +24,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('/transaction/{id}', [TransactionController::class, 'update']);
     Route::delete('/transaction/{id}', [TransactionController::class, 'delete']);
 
+    Route::get('/report/monthly-transactions', [ReportController::class, 'monthlyTransactions']);
+
     Route::get('/export/transactions', [ReportController::class, 'exportTransactions']);
 });
