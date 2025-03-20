@@ -12,7 +12,11 @@ class Transaction extends Model
     ];
 
     private const CATEGORIES = [
-
+        1 => 'Receitas',
+        2 => 'Despesas',
+        3 => 'Investimentos',
+        4 => 'Adicionais',
+        5 => 'Outros',
     ];
 
     private const PAYMENT_METHODS = [
