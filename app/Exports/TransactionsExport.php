@@ -38,6 +38,7 @@ class TransactionsExport implements FromCollection, WithHeadings
         ->get()
         ->map(function($transaction) {
             $transaction->type = Transaction::getTypeName($transaction->type);
+            $transaction->category = Transaction::getCategoryName($transaction->category);
             $transaction->payment_method = Transaction::getPaymentMethodName($transaction->payment_method);
             $transaction->payment_status = Transaction::getPaymentStatusName($transaction->payment_status);
             $transaction->value = 'R$ ' . number_format($transaction->value, 2, ',', '');
