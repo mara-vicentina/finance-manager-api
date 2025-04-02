@@ -24,6 +24,7 @@ class TransactionController extends Controller
         }
 
         $transactions = Transaction::query()
+            ->where('user_id', Auth::id())
             ->when(!empty($request->start_date), fn($query) => 
                 $query->where('transaction_date', '>=', $request->start_date . ' 00:00:00')
             )
